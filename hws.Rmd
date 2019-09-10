@@ -1,0 +1,197 @@
+---
+title: "hw 1"
+author: "G. Moroz"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+library(rstan)
+library(bayesplot)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+# HW 1
+## 1.
+Assuming the same likelihood as in 2.2 and the same data as before, k = 8, N = 10, (try to) fit the model with the following parameters for the Beta prior in Stan, and summarize and plot its posterior:
+
+* a=1, b=1
+* a=5, b=1
+* a=1, b=5
+* a=0, b=0
+
+```{stan output.var="hw_binomial_1", cache=TRUE}
+data {
+  int<lower = 1> N; // Total number of answers
+  int<lower = 0, upper = N> k; // Number of times "umbrella" was answered
+}
+parameters {
+// theta is a probability, it has to be constrained between 0 and 1
+  real<lower = 0, upper = 1> theta;
+}
+model {
+// Prior on theta:
+  target += beta_lpdf(theta | 8, 2); // prior params
+// Likelihood:
+  target += binomial_lpmf(k | N, theta);
+}
+```
+
+### 1.a
+```{r, cache = TRUE}
+binomial.1a <- sampling(hw_binomial_1, data = list(k = 1, N = 2))
+traceplot(binomial.1a, pars = c("theta"))
+print(binomial.1a, pars = c("theta"))
+df_binomial.1a <- as.data.frame(binomial.1a)
+mcmc_dens(df_binomial.1a, pars = "theta") + 
+  geom_vline(xintercept = mean(df_binomial.1a$theta))
+```
+
+### 1.b
+```{r, cache = TRUE}
+binomial.1b <- sampling(hw_binomial_1, data = list(k = 5, N = 6))
+traceplot(binomial.1b, pars = c("theta"))
+print(binomial.1b, pars = c("theta"))
+df_binomial.1b <- as.data.frame(binomial.1b)
+mcmc_dens(df_binomial.1b, pars = "theta") + 
+  geom_vline(xintercept = mean(df_binomial.1b$theta))
+```
+
+### 1.c
+```{r, cache = TRUE}
+binomial.1c <- sampling(hw_binomial_1, data = list(k = 1, N = 6))
+traceplot(binomial.1c, pars = c("theta"))
+print(binomial.1c, pars = c("theta"))
+df_binomial.1c <- as.data.frame(binomial.1c)
+mcmc_dens(df_binomial.1c, pars = "theta") + 
+  geom_vline(xintercept = mean(df_binomial.1c$theta))
+```
+
+### 1.d
+Don't work!
+```{r, cache = TRUE, eval = FALSE}
+binomial.1d <- sampling(hw_binomial_1, data = list(k = 0, N = 0))
+```
+
+## 2.
+Assuming the same likelihood as in 2.2 and the same data as before, k = 800, N = 1000, (try to) fit the model with the following parameters for the Beta prior in Stan, and summarize and plot its posterior:
+
+* a=1, b=1
+* a=5, b=1
+* a=1, b=5
+* a=0, b=0
+
+```{stan output.var="hw_binomial_2", cache=TRUE}
+data {
+  int<lower = 1> N; // Total number of answers
+  int<lower = 0, upper = N> k; // Number of times "umbrella" was answered
+}
+parameters {
+// theta is a probability, it has to be constrained between 0 and 1
+  real<lower = 0, upper = 1> theta;
+}
+model {
+// Prior on theta:
+  target += beta_lpdf(theta | 800, 200); // prior params
+// Likelihood:
+  target += binomial_lpmf(k | N, theta);
+}
+```
+
+### 2.a
+```{r, cache = TRUE}
+binomial.2a <- sampling(hw_binomial_2, data = list(k = 1, N = 2))
+traceplot(binomial.2a, pars = c("theta"))
+print(binomial.2a, pars = c("theta"))
+df_binomial.2a <- as.data.frame(binomial.2a)
+mcmc_dens(df_binomial.2a, pars = "theta") + 
+  geom_vline(xintercept = mean(df_binomial.2a$theta))
+```
+
+### 2.b
+```{r, cache = TRUE}
+binomial.2b <- sampling(hw_binomial_2, data = list(k = 5, N = 6))
+traceplot(binomial.2b, pars = c("theta"))
+print(binomial.2b, pars = c("theta"))
+df_binomial.2b <- as.data.frame(binomial.2b)
+mcmc_dens(df_binomial.2b, pars = "theta") + 
+  geom_vline(xintercept = mean(df_binomial.2b$theta))
+```
+
+### 2.c
+```{r, cache = TRUE}
+binomial.2c <- sampling(hw_binomial_2, data = list(k = 1, N = 6))
+traceplot(binomial.2c, pars = c("theta"))
+print(binomial.2c, pars = c("theta"))
+df_binomial.2c <- as.data.frame(binomial.2c)
+mcmc_dens(df_binomial.2c, pars = "theta") + 
+  geom_vline(xintercept = mean(df_binomial.2c$theta))
+```
+
+### 2.d
+Don't work!
+```{r, cache = TRUE, eval = FALSE}
+binomial.2d <- sampling(hw_binomial_2, data = list(k = 0, N = 0))
+```
+
+
+
+## 3.
+Assuming the same likelihood as in 2.2 and the same data as before, k = 10, N = 10, (try to) fit the model with the following parameters for the Beta prior in Stan, and summarize and plot its posterior:
+
+* a=1, b=1
+* a=5, b=1
+* a=1, b=5
+* a=0, b=0
+
+```{stan output.var="hw_binomial_3", eval = FALSE}
+data {
+  int<lower = 1> N; // Total number of answers
+  int<lower = 0, upper = N> k; // Number of times "umbrella" was answered
+}
+parameters {
+// theta is a probability, it has to be constrained between 0 and 1
+  real<lower = 0, upper = 1> theta;
+}
+model {
+// Prior on theta:
+  target += beta_lpdf(theta | 10, 0); // prior params
+// Likelihood:
+  target += binomial_lpmf(k | N, theta);
+}
+```
+
+### 3.a, 3.b, 3.c
+will not work...
+
+## 4.
+
+Assuming the same likelihood as in 2.2 and the same data as before, k = 800, N = 1000, say that you are quite certain that the cloze probability should be 80%. How would you change the priors for the model? Fit the model several times, assuming the same average accuracy as prior information, but varying the amount of uncertainty? When do the results change?
+
+They won't change if you'll have prior $k = 8\times x, N = 10\times x$, for any $x \in \mathbb{N}$.
+
+## 5. What’s the problem with the following model? How would you fix it?
+
+```
+data {
+  int<lower = 1> N;  // Total number of answers 
+  int<lower = 0, upper = N> k;  // Number of times "umbrella" was answered
+}
+parameters {
+  // theta is a probability, it has to be constrained between 0 and 1
+  real<lower = -1, upper = 1> theta;
+}
+model {
+  // Prior on theta:
+  target += normal_lpdf(theta | 0, 2); 
+  // Likelihood:
+  target += binomial_lpmf(k | N, theta); 
+}
+```
+
+* lower boundary should be 0, otherwise it is not a probability distribution
+* prior shoud be `beta_lpdf` and not `normal_lpdf`
+* params ob beta distribution should be > 0
